@@ -11,7 +11,7 @@ function formatDate(iso?: string): string {
 }
 
 export default function MetaLine({ author, publishedAt }: MetaLineProps) {
-  const authorText = author?.trim() || "Unknown";
+  const authorText = (author || "").trim() || "Unknown";
   const dateText = formatDate(publishedAt);
   return (
     <div style={{ fontSize: 12, color: "#555" }}>
