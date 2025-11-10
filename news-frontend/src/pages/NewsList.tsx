@@ -5,20 +5,27 @@ import SearchBar from "../components/SearchBar";
 import { ErrorText, EmptyState } from "../components/Status";
 import useDebouncedValue from "../hooks/useDebouncedValue";
 
+function isAbortError(err: unknown): err is DOMException {
+  return err instanceof DOMException && err.name === "AbortError";
+}
+
 export default function NewsList() {
   const [items, setItems] = useState<Article[]>([]);
-  const [query, setQuery] = useState("");
-  const debouncedQuery = useDebouncedValue(query, 300);
-  const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
+  const [query, setQuery] = useState<string>("");
+  const debouncedQuery = useDebouncedValue<string>(query, 300);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [errorMsg, setErrorMsg] = useState<string>("");
 
-  const didInit = useRef(false);          // ← guard
-  const abortRef = useRef<AbortController | null>(null); // ← cancel in-flight fetch
+  const didInit = useRef<boolean>(false);
+  const abortRef = useRef<AbortController | undefined>(undefined);
 
-  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => setQuery(e.target.value);
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+  };
 
   const load = useCallback(async () => {
     try {
+      // cancel any in-flight request
       abortRef.current?.abort();
       const controller = new AbortController();
       abortRef.current = controller;
@@ -26,10 +33,10 @@ export default function NewsList() {
       setErrorMsg("");
       setLoading(true);
 
-      const articles = await fetchNews({ signal: controller.signal }); // accept AbortSignal in your api
+      const articles = await fetchNews({ signal: controller.signal });
       setItems(articles);
     } catch (err: unknown) {
-      if ((err as any)?.name === "AbortError") return; // ignore cancellations
+      if (isAbortError(err)) return; // ignore cancellations
       const msg = err instanceof Error ? err.message : "Failed to load news";
       setErrorMsg(msg);
     } finally {
@@ -38,17 +45,17 @@ export default function NewsList() {
   }, []);
 
   useEffect(() => {
-    if (didInit.current) return; // ← prevent second mount call in StrictMode
+    if (didInit.current) return; // prevent StrictMode double run
     didInit.current = true;
 
     void load();
 
     return () => {
-      abortRef.current?.abort(); // cleanup on unmount
+      abortRef.current?.abort();
     };
   }, [load]);
 
-  const filtered = useMemo(() => {
+  const filtered = useMemo<Article[]>(() => {
     const t = debouncedQuery.trim().toLowerCase();
     if (!t) return items;
     return items.filter((a) => (a.title ?? "").toLowerCase().includes(t));
@@ -56,7 +63,12 @@ export default function NewsList() {
 
   return (
     <div>
-      <SearchBar value={query} onChange={handleSearchChange} onRefresh={load} loading={loading} />
+      <SearchBar
+        value={query}
+        onChange={handleSearchChange}
+        onRefresh={load}
+        loading={loading}
+      />
       <ErrorText text={errorMsg} />
       <EmptyState show={!errorMsg && !loading && filtered.length === 0} />
 
