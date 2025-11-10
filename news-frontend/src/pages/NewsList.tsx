@@ -1,10 +1,6 @@
 import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  type ChangeEvent,
-  type SyntheticEvent,
+  useCallback, useEffect, useMemo, useState,
+  type ChangeEvent, type SyntheticEvent
 } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchNews, type Article } from '../api';
@@ -17,11 +13,12 @@ function formatDate(iso?: string): string {
   return Number.isNaN(d.getTime()) ? '' : d.toLocaleString();
 }
 
-export default function NewsList(): JSX.Element {
+export default function NewsList() { 
   const [items, setItems] = useState<Article[]>([]);
   const [query, setQuery] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
-  const [err, setErr] = useState<string>('');
+  const [debouncedQuery, setDebouncedQuery] = useState<string>('');
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState('');
 
   const load = useCallback(async () => {
     try {
@@ -37,23 +34,25 @@ export default function NewsList(): JSX.Element {
     }
   }, []);
 
-  useEffect(() => {
-    void load();
-  }, [load]);
+  useEffect(() => { void load(); }, [load]);
 
-  const onSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
-  };
+  // Debounce 300ms
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedQuery(query), 300);
+    return () => clearTimeout(t);
+  }, [query]);
+
+  const onSearchChange = (e: ChangeEvent<HTMLInputElement>) => setQuery(e.target.value);
 
   const onImgError = (e: SyntheticEvent<HTMLImageElement>) => {
     e.currentTarget.src = PLACEHOLDER_SM;
   };
 
   const filtered = useMemo(() => {
-    const t = query.trim().toLowerCase();
+    const t = debouncedQuery.trim().toLowerCase();
     if (!t) return items;
-    return items.filter((a) => (a.title ?? '').toLowerCase().includes(t));
-  }, [query, items]);
+    return items.filter(a => (a.title ?? '').toLowerCase().includes(t));
+  }, [debouncedQuery, items]);
 
   return (
     <div>
@@ -76,15 +75,10 @@ export default function NewsList(): JSX.Element {
       </div>
 
       {loading && <p role="status">Loading…</p>}
-      {err && (
-        <p role="alert" style={{ color: 'crimson' }}>
-          {err}
-        </p>
-      )}
+      {err && <p role="alert" style={{ color: 'crimson' }}>{err}</p>}
 
       <div style={{ display: 'grid', gap: 10 }}>
         {filtered.map((a, i) => {
-          // Prefer a stable, unique key if available
           const key = a.url ?? `${a.title}-${a.publishedAt}-${i}`;
           return (
             <Link
@@ -92,15 +86,9 @@ export default function NewsList(): JSX.Element {
               to="/detail"
               state={{ article: a }}
               style={{
-                display: 'flex',
-                gap: 12,
-                padding: 12,
-                border: '1px solid #eee',
-                borderRadius: 8,
-                background: '#fff',
-                textDecoration: 'none',
-                color: 'inherit',
-                alignItems: 'center',
+                display: 'flex', gap: 12, padding: 12, border: '1px solid #eee',
+                borderRadius: 8, background: '#fff', textDecoration: 'none',
+                color: 'inherit', alignItems: 'center',
               }}
             >
               <img
