@@ -1,101 +1,129 @@
-# 📰 News Headlines App (React + Vite)
+# 📰 News Headlines App (Full-Stack) — React + Vite + Node.js
 
-A small full-stack app that fetches real headlines and displays them with a clean UI.
-The backend proxies NewsAPI securely (API key kept on the server) and exposes a protected /api/news endpoint consumed by the React frontend.
+A full-stack news application that securely fetches live headlines from **NewsAPI** via a protected backend, and displays them in a clean responsive UI with search, refresh, skeleton loading, and detail view.
+
+This project demonstrates best-practices in frontend architecture, API security, state management, and clean UI/UX — assisted by AI tooling for optimization.
 
 ---
 
 ## 🚀 Features
 
-- ✅ Fetch latest news articles
-•	✅ Protected backend using Bearer token (no public API key in the frontend)
-- ✅ Search with debounce (filters articles by title)
-- ✅ Refresh button to reload data
-- ✅ Error & loading states
-- ✅ Fallback image for broken thumbnails
-- ✅ Detail page: full article info
-- ✅ Clean & responsive UI
-- ✅ TypeScript + Vite + React Router
--  ✅ Include a Search Bar to filter articles dynamically by title.
--  ✅ Support Pull-to-Refresh or reload option to update the news list. 
+### ✅ **Frontend (React + Vite + TS)**
+- Secure fetch from protected backend (`/api/news`)
+- Live headlines grid view
+- **Search with debounce**
+- **Refresh / Pull-to-refresh button**
+- **Fallback images + image proxy fallback**
+- **Skeleton loaders**
+- Responsive layout + clean UI (SCSS modular styling)
+- Reusable components (ArticleCard, SearchBar, SkeletonCard, ArticleImage, MetaLine)
+- TypeScript everywhere
+
+### ✅ **Backend (Node.js + Express)**  
+- `/api/news` endpoint (proxy to NewsAPI)
+- Filters only required fields:
+  - title, description, image, author, date, content
+- **Bearer token authentication** (protects API)
+- API key kept server-side (not exposed)
+
+### ✅ Security
+- Client sends stored token → backend validates
+- NewsAPI key **never exposed on frontend**
+- `.env` based secrets management
+
+### ✅ Code Quality
+- Clean folder structure  
+- Strong TypeScript types
+- Aborting pending fetch requests (avoid double calls in Strict Mode)
+- Meaningful git commits (`add server`, `add debounce`, `refactor`, `add skeleton`, etc.)
 
 ---
 
-## 📂 Project Structure
-/news-frontend    → Vite + React + TS (consumes /api)
-/server           → Node + Express (proxies NewsAPI; secured with token)
+## 🧠 Tech Stack
 
-	•	Frontend calls /api/news (via Vite dev proxy or VITE_API_BASE in prod).
-	•	Backend calls NewsAPI with NEWS_API_KEY (server-only).
+| Layer | Technology |
+|------|------------|
+| Frontend | React 19, Vite, TypeScript, SCSS |
+| Backend | Node.js, Express |
+| API | NewsAPI.org |
+| Auth | Bearer Token |
+| State | React Hooks |
+| Routing | React Router v6 |
+| Dev Tools | Nodemon, Axios |
 
-## ⚙️ Requirements
+---
 
-- Node.js 18+
-- PNPM / NPM / Yarn
+## 📂 Folder Structure
 
-Environment Variables
+root/
+├─ news-frontend/     # React app
+│   ├─ src
+│   │   ├─ api/
+│   │   ├─ components/
+│   │   ├─ pages/
+│   │   ├─ hooks/
+│   │   ├─ utils/
+│   │   └─ styles/
+│   └─ vite.config.ts
+├─ server/            # Node backend
+│   └─ server.js
+└─ README.md
 
-Server (server/.env)
-NEWS_API_KEY=YOUR_REAL_NEWSAPI_KEY
-DEMO_TOKEN=DEMO_TOKEN_123
-PORT=4000
-# Optional:
-# NEWS_COUNTRY=us
+## 🔐 Environment Variables
 
-Frontend (news-frontend/.env)
-# In dev, we proxy /api to http://localhost:4000
-VITE_API_BASE=/api
-VITE_DEMO_TOKEN=DEMO_TOKEN_123
-The server is the only place that talks to NewsAPI with your key.
-
-
-🛠️ Install
-Environment Values for Server:
-NEWS_API_KEY=7036b09db7e64f24891a22c6e5ab54b9
-DEMO_TOKEN=DEMO_TOKEN_123
-PORT=4000
-
-Environment Values for frontend:
-
+### **Frontend (`news-frontend/.env`)**
 VITE_API_BASE=/api
 VITE_DEMO_TOKEN=DEMO_TOKEN_123
 
-# in repo root
+### **Backend (`server/.env`)**
+
+NEWS_API_KEY=YOUR_NEWS_API_KEY // or use 7036b09db7e64f24891a22c6e5ab54b9
+DEMO_TOKEN=DEMO_TOKEN_123
+PORT=4000
+
+
+---
+
+## 🛠 Installation & Run
+
+### Clone & install
+
+```bash
+git clone https://github.com/Mostafa-Ragab/news-list
+
+cd news-list
+Install & run backend
 cd server
-pnpm install   # or npm i / yarn
+npm install
+npm run dev
+
+
+Install & run frontend
 cd ../news-frontend
-pnpm install   # or npm i / yarn
+npm install
+npm run dev
 
-▶️ Run (two options)
 
-Option A: Two terminals (simple)
+App will run at:
+	•	Frontend → http://localhost:5173
+	•	Backend  → http://localhost:4000
 
-Terminal 1 — server
+  🧪 Test Secure Fetch
 
-cd server
-pnpm dev   # or npm run dev
-# API running on http://localhost:4000
-Terminal 2 — frontend
+  Your browser must hold token:
+  localStorage.setItem("token", "DEMO_TOKEN_123");
 
-cd news-frontend
-pnpm dev   # or npm run dev
-# Vite on http://localhost:5173
+  Then refresh the app ✅
 
-Dev proxy (frontend vite.config.ts) should include:
+  🎯 Highlights
+	•	✅ Secure backend proxy (no API key leakage)
+	•	✅ Debounced search for performance and add abortController
+	•	✅ Skeleton on first load
+	•	✅ Handles image errors + CDN proxy fallback
+	•	✅ Cancel fetch on component unmount
+	•	✅ Clean reusable UI components
+	•	✅ Git commits reflect feature milestones
+  •	✅ loading skeletons = better perceived performanc
 
-server: {
-  proxy: {
-    "/api": { target: "http://localhost:4000", changeOrigin: true }
-  }
-}
----
-
-🔑 Auth Flow (dev)
-	•	On app start, the frontend seeds a demo token (from VITE_DEMO_TOKEN) into localStorage and sends it as:
-    Authorization: Bearer DEMO_TOKEN_123
-
-    	•	The server checks this token for every request (except CORS preflight), returning 401 if missing/wrong.
-
-Terminal: curl -i -H "Authorization: Bearer DEMO_TOKEN_123" http://localhost:4000/api/news
-Should respond 200 with JSON { articles: [...] }.
+This project mimics real-world production patterns for API consumption, security, and performance optimization.
 
