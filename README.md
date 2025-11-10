@@ -16,6 +16,8 @@ This project simulates a frontend assignment where the app consumes a news API s
 - ✅ Detail page: full article info
 - ✅ Clean & responsive UI
 - ✅ TypeScript + Vite + React Router
+-  ✅ Include a Search Bar to filter articles dynamically by title.
+-  ✅ Support Pull-to-Refresh or reload option to update the news list. 
 
 ---
 
