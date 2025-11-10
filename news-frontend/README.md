@@ -1,73 +1,54 @@
-# React + TypeScript + Vite
+# 📰 News Headlines App (React + Vite)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple news viewer app that fetches real-time headlines and displays them in a clean interface.  
+This project simulates a frontend assignment where the app consumes a news API securely and shows a list + detailed article screen.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
 
-## React Compiler
+- ✅ Fetch latest news articles
+- ✅ Protected API call (via  environment variables)
+- ✅ Search with debounce (filters articles by title)
+- ✅ Refresh button to reload data
+- ✅ Error & loading states
+- ✅ Fallback image for broken thumbnails
+- ✅ Detail page: full article info
+- ✅ Clean & responsive UI
+- ✅ TypeScript + Vite + React Router
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 📂 Project Structure
+src/
+├── api/          # fetch functions
+├── components/   # UI components
+├── pages/        # NewsList + Details
+├── router/       # App routing
+└── main.tsx      # App entry
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## ⚙️ Requirements
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Node.js 18+
+- PNPM / NPM / Yarn
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🛠️ Installation & Run
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Clone the project
+```sh
+git clone https://github.com/YOUR_USERNAME/news-task.git
+cd news-task
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+pnpm install
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Create .env file in project root:
+
+VITE_NEWS_API_KEY=7036b09db7e64f24891a22c6e5ab54b9
+VITE_NEWS_ENDPOINT=https://newsapi.org/v2/top-headlines
+VITE_NEWS_COUNTRY=us
+VITE_USE_BACKEND=false
+
+▶️ Run Development Server
+pnpm dev
