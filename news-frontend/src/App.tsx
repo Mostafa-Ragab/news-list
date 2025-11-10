@@ -10,7 +10,6 @@ export default function App() {
       </header>
 
       <Outlet />
-      <footer>React + Node + JWT Demo</footer>
     </div>
   )
 }
