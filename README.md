@@ -50,6 +50,15 @@ The server is the only place that talks to NewsAPI with your key.
 
 
 🛠️ Install
+Environment Values for Server:
+NEWS_API_KEY=7036b09db7e64f24891a22c6e5ab54b9
+DEMO_TOKEN=DEMO_TOKEN_123
+PORT=4000
+
+Environment Values for frontend:
+
+VITE_API_BASE=/api
+VITE_DEMO_TOKEN=DEMO_TOKEN_123
 
 # in repo root
 cd server
