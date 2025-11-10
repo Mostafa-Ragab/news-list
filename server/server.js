@@ -11,20 +11,17 @@ const NEWS_API_KEY = process.env.NEWS_API_KEY;
 const DEMO_TOKEN = process.env.DEMO_TOKEN || "DEMO_TOKEN_123";
 const DEFAULT_COUNTRY = process.env.NEWS_COUNTRY || "us";
 
-// --- CORS: اسمح بالـAuthorization + OPTIONS
 app.use(
   cors({
-    origin: ["http://localhost:5173"], // غيّرها في الإنتاج
+    origin: ["http://localhost:5173"],
     credentials: false,
     methods: ["GET", "OPTIONS"],
     allowedHeaders: ["Authorization", "Content-Type"],
   })
 );
 
-// اختياري: هيلث تشيك بسيط
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 
-// --- Auth middleware: اسمح بتمرير OPTIONS بلا توكن
 app.use((req, res, next) => {
   if (req.method === "OPTIONS") return res.sendStatus(204); // preflight
   const expected = `Bearer ${DEMO_TOKEN}`;
@@ -40,13 +37,11 @@ app.get("/api/news", async (req, res) => {
       return res.status(500).json({ error: "Missing NEWS_API_KEY" });
     }
 
-    // اسمح بتغيير الدولة عبر كويري ?country=gb (اختياري)
     const country = (req.query.country || DEFAULT_COUNTRY).toString();
 
     const { data } = await axios.get("https://newsapi.org/v2/top-headlines", {
       params: { country },
       headers: { "X-Api-Key": NEWS_API_KEY },
-      // timeout اختياري
       timeout: 10000,
     });
 
