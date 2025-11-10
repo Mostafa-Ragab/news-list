@@ -27,9 +27,11 @@ This project demonstrates best-practices in frontend architecture, API security,
 - API key kept server-side (not exposed)
 
 ### ✅ Security
-- Client sends stored token → backend validates
 - NewsAPI key **never exposed on frontend**
 - `.env` based secrets management
+	•	Local token check before calling server
+	•	Server validates bearer token
+	•.env for secrets
 
 ### ✅ Code Quality
 - Clean folder structure  
@@ -114,6 +116,27 @@ App will run at:
   localStorage.setItem("token", "DEMO_TOKEN_123");
 
   Then refresh the app ✅
+
+  🏗 Build for Production
+
+1️⃣ Build the frontend
+cd news-frontend
+npm run build  
+
+2️⃣ Serve frontend via Node server
+
+Ensure Express serves static files (already configured in this project):
+
+app.use(express.static(path.join(__dirname, "../news-frontend/dist")));
+app.get("*", (_req, res) =>
+  res.sendFile(path.join(__dirname, "../news-frontend/dist/index.html"))
+); # generates dist/
+
+3️⃣ Start backend (serves built frontend)
+cd server
+npm install --production
+node server.js
+ App available at → http://localhost:4000
 
   🎯 Highlights
 	•	✅ Secure backend proxy (no API key leakage)
