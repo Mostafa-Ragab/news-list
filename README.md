@@ -14,7 +14,6 @@ This project demonstrates best-practices in frontend performance, API security, 
 - **Search with debounce**
 - **Refresh / Pull-to-refresh button**
 - **Fallback images + image proxy fallback**
-- **Skeleton loaders**
 - Responsive layout + clean UI (SCSS modular styling)
 - Reusable components (ArticleCard, SearchBar, SkeletonCard, ArticleImage, MetaLine)
 - TypeScript everywhere
