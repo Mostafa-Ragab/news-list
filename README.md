@@ -2,7 +2,7 @@
 
 A full-stack news application that securely fetches live headlines from **NewsAPI** via a protected backend, and displays them in a clean responsive UI with search, refresh, skeleton loading, and detail view.
 
-This project demonstrates best-practices in frontend architecture, API security, state management, and clean UI/UX — assisted by AI tooling for optimization.
+This project demonstrates best-practices in frontend performance, API security, and clean UI/UX.
 
 ---
 
